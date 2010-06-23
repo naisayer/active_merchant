@@ -297,6 +297,51 @@ module ActiveMerchant #:nodoc:
         commit(:query_payment, request)
       end
 
+      # A more ActiveMerchant style method to create a customer
+      #
+      # ==== Options
+      #
+      # * <tt>credit_card</tt> A ActiveMerchant Credit Card 
+      # * <tt>options</tt> See the options paramaters for create_customer (you can omit the credit_card option)
+      #
+      # ==== Returns
+      #
+      # See the create_customer method
+      def store(credit_card, options = {})
+        create_customer(options.merge({ :credit_card => credit_card }))
+      end
+
+      # A more ActiveMerchant style method to update a customer
+      #
+      # ==== Options
+      #
+      # * <tt>managed_customer_id</tt> The managed customer id
+      # * <tt>credit_card</tt> A ActiveMerchant Credit Card 
+      # * <tt>options</tt> See the options paramaters for update_customer (you can omit the managed_customer_id and credit_card options)
+      #
+      # ==== Returns
+      #
+      # See the update_customer method
+      def update(managed_customer_id, credit_card, options = {})
+        update_customer(options.merge({ :managed_customer_id => managed_customer_id, :credit_card => credit_card }))
+      end
+
+      # A more ActiveMerchant style method to process a payment
+      #
+      # ==== Options
+      #
+      # * <tt>money</tt> The amount in cents
+      # * <tt>managed_customer_id</tt> The managed customer id
+      # * <tt>options</tt> See the options paramaters for process_payment (you can omit the managed_customer_id and amount options)
+      #
+      # ==== Returns
+      #
+      # See the process_payment method
+
+      def purchase(money, managed_customer_id, options = {})
+        process_payment(options.merge({ :managed_customer_id => managed_customer_id, :amount => money }))
+      end
+
     protected
       # Build methods
       def build_request(action, options = {})

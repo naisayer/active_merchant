@@ -55,6 +55,23 @@ class EwayTokenTest < Test::Unit::TestCase
     assert_nil response.authorization
   end
 
+  def test_successful_store
+    credit_card = @customer.delete(:credit_card)
+    response = @gateway.store(credit_card, @customer)
+    assert_instance_of Response, response
+    assert_success response
+    assert_nil response.authorization
+    assert_equal '112233445566', response.params['create_customer_result']
+  end
+
+  def test_failed_store
+    @customer[:title] = 'Invalid'
+    credit_card = @customer.delete(:credit_card)
+    response = @gateway.store(credit_card, @customer)
+    assert_failure response
+    assert_nil response.authorization
+  end
+
   def test_successful_update_customer
     @customer[:managed_customer_id] = '9876543211000'
     response = @gateway.update_customer(@customer)
@@ -81,6 +98,35 @@ class EwayTokenTest < Test::Unit::TestCase
     assert_failure response
     assert_nil response.authorization
   end
+
+  def test_successful_update
+    credit_card = @customer.delete(:credit_card)
+    response = @gateway.update('9876543211000', credit_card, @customer)
+    assert_instance_of Response, response
+    assert_success response
+    assert_nil response.authorization
+    assert_equal 'true', response.params['update_customer_result']
+  end
+
+  def test_non_existent_update_customer
+    credit_card = @customer.delete(:credit_card)
+    response = @gateway.update('1234567899000', credit_card, @customer)
+    assert_instance_of Response, response
+    assert_failure response
+    assert_nil response.authorization
+    assert_equal 'Invalid managedCustomerID', response.message
+  end
+
+  def test_failed_update_customer
+    @customer[:title] = 'Invalid'
+    credit_card = @customer.delete(:credit_cart)
+    response = @gateway.update('9876543211000', credit_card, @customer)
+    assert_instance_of Response, response
+    assert_failure response
+    assert_nil response.authorization
+  end
+
+
 
   def test_query_customer
     response = @gateway.query_customer({ :managed_customer_id => '9876543211000' })
@@ -123,6 +169,29 @@ class EwayTokenTest < Test::Unit::TestCase
   def test_failed_process_payment
     @payment[:amount] = 1001
     response = @gateway.process_payment(@payment)
+    assert_instance_of Response, response
+    assert_failure response
+    assert_equal "Refer to Issuer(Test Gateway)", response.message
+    #assert_nil response.authorization
+  end
+
+  def test_purchase
+    money = @payment.delete(:amount)
+    managed_customer_id = @payment.delete(:managed_customer_id)
+
+    response = @gateway.purchase(money, managed_customer_id, @payment)
+    assert_instance_of Response, response
+    assert_success response
+    assert_equal '123456', response.authorization
+    assert_equal 'Transaction Approved(Test Gateway)', response.message
+  end
+
+  def test_failed_process_payment
+    @payment.delete(:amount)
+    money = 1001
+    managed_customer_id = @payment.delete(:managed_customer_id)
+
+    response = @gateway.purchase(money, managed_customer_id, @payment)
     assert_instance_of Response, response
     assert_failure response
     assert_equal "Refer to Issuer(Test Gateway)", response.message
