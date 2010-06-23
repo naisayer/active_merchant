@@ -371,17 +371,20 @@ module ActiveMerchant #:nodoc:
 
       def build_query_customer_request(xml, options)
         xml.QueryCustomer :xmlns => "https://www.eway.com.au/gateway/managedpayment" do |customer|
+        requires!(options, :managed_customer_id)
           customer.managedCustomerID(options[:managed_customer_id])
         end
       end
 
       def build_query_customer_by_reference_request(xml, options)
+        requires!(options, :customer_reference)
         xml.QueryCustomerByReference :xmlns => "https://www.eway.com.au/gateway/managedpayment" do |customer|
           customer.CustomerReference(options[:customer_reference])
         end
       end
 
       def build_update_customer_request(xml, options)
+        requires!(options, :managed_customer_id)
         xml.UpdateCustomer :xmlns => "https://www.eway.com.au/gateway/managedpayment" do |customer|
           customer.managedCustomerID(options[:managed_customer_id])
           add_customer(xml, options)
@@ -389,6 +392,8 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_customer(xml, options)
+        requires!(options, :title, :address)
+        
         xml.Title(options[:title])
         xml.FirstName(options[:first_name])
         xml.LastName(options[:last_name])
@@ -420,6 +425,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def build_process_payment_request(xml, options)
+        requires!(options, :managed_customer_id, :amount)
         xml.ProcessPayment :xmlns => "https://www.eway.com.au/gateway/managedpayment" do |payment|
           payment.managedCustomerID(options[:managed_customer_id])
           payment.amount(options[:amount])
