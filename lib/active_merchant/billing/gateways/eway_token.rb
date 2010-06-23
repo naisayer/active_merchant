@@ -299,10 +299,19 @@ module ActiveMerchant #:nodoc:
 
       # A more ActiveMerchant style method to create a customer
       #
+      # * <tt>:credit_card</tt> -- A valid credit card object
+      # 
       # ==== Options
-      #
-      # * <tt>credit_card</tt> A ActiveMerchant Credit Card 
-      # * <tt>options</tt> See the options paramaters for create_customer (you can omit the credit_card option)
+      # * <tt>:title</tt> -- Your customers title and it must be one of these values; Mr., Ms., Mrs., Miss, Dr., Sir. or Prof. (REQUIRED)
+      # * <tt>:first_name</tt> -- The first name of your customer
+      # * <tt>:last_name</tt> -- The last name of your customer
+      # * <tt>:company</tt> -- The company your customer works for
+      # * <tt>:email</tt> -- Your customers Email address
+      # * <tt>:customer_ref</tt> -- Your own reference number for your customer
+      # * <tt>:job_desc</tt> -- Your customers job description/title, e.g. CEO, Director etc
+      # * <tt>:comments</tt> -- Any comments that your customer wishes to add, or you wish to add about the customer
+      # * <tt>:url</tt> -- The URL of your customers website
+      # * <tt>billing_address</tt> -- An ActiveMerchant billing_address object 
       #
       # ==== Returns
       #
@@ -315,11 +324,21 @@ module ActiveMerchant #:nodoc:
 
       # A more ActiveMerchant style method to update a customer
       #
+      # * <tt>managed_customer_id</tt> The managed customer id
+      # * <tt>:credit_card</tt> -- A valid credit card object
+      #
       # ==== Options
       #
-      # * <tt>managed_customer_id</tt> The managed customer id
-      # * <tt>credit_card</tt> A ActiveMerchant Credit Card 
-      # * <tt>options</tt> See the options paramaters for update_customer (you can omit the managed_customer_id and credit_card options)
+      # * <tt>:title</tt> -- Your customers title and it must be one of these values; Mr., Ms., Mrs., Miss, Dr., Sir. or Prof. (REQUIRED)
+      # * <tt>:first_name</tt> -- The first name of your customer
+      # * <tt>:last_name</tt> -- The last name of your customer
+      # * <tt>:company</tt> -- The company your customer works for
+      # * <tt>:email</tt> -- Your customers Email address
+      # * <tt>:customer_ref</tt> -- Your own reference number for your customer
+      # * <tt>:job_desc</tt> -- Your customers job description/title, e.g. CEO, Director etc
+      # * <tt>:comments</tt> -- Any comments that your customer wishes to add, or you wish to add about the customer
+      # * <tt>:url</tt> -- The URL of your customers website
+      # * <tt>billing_address</tt> -- An ActiveMerchant billing_address object 
       #
       # ==== Returns
       #
