@@ -308,6 +308,8 @@ module ActiveMerchant #:nodoc:
       #
       # See the create_customer method
       def store(credit_card, options = {})
+        requires!(options, :billing_address)
+        options = convert_address(options)
         create_customer(options.merge({ :credit_card => credit_card }))
       end
 
@@ -323,6 +325,8 @@ module ActiveMerchant #:nodoc:
       #
       # See the update_customer method
       def update(managed_customer_id, credit_card, options = {})
+        requires!(options, :billing_address)
+        options = convert_address(options)
         update_customer(options.merge({ :managed_customer_id => managed_customer_id, :credit_card => credit_card }))
       end
 
@@ -419,9 +423,24 @@ module ActiveMerchant #:nodoc:
         return unless credit_card
         
         xml.CCNumber(credit_card.number)
-        xml.CCNameOnCard(credit_card.first_name + " " + credit_card.last_name)
-        xml.CCExpiryMonth(credit_card.month)
-        xml.CCExpiryYear(credit_card.year.to_s[2..3])
+        xml.CCNameOnCard(credit_card.name)
+        xml.CCExpiryMonth(sprintf("%.2i", credit_card.month))
+        xml.CCExpiryYear(sprintf("%.4i", credit_card.year)[-2..-1])
+      end
+
+      def convert_address(options = {})
+        billing_address = options.delete(:billing_address)
+
+        options[:address]  = billing_address[:address1].to_s
+        options[:phone]  = billing_address[:phone].to_s
+        options[:post_code]  = billing_address[:zip].to_s
+        options[:suburb]  = billing_address[:city].to_s
+        options[:country]  = billing_address[:country].to_s
+        options[:state]  = billing_address[:state].to_s
+        options[:mobile]  = billing_address[:mobile].to_s
+        options[:fax]  = billing_address[:fax].to_s
+
+        options
       end
 
       def build_process_payment_request(xml, options)

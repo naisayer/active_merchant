@@ -32,6 +32,29 @@ class EwayTokenTest < Test::Unit::TestCase
       :credit_card => credit_card(4444333322221111)
     }
 
+    @am_customer = {
+      :title => 'Mr.',
+      :first_name => 'Joe',
+      :last_name => 'Bloggs',
+      :company => 'Bloggs',
+      :email => 'test@eway.com.au',
+      :customer_ref => 'Ref123',
+      :job_desc => '',
+      :comments => 'Please Ship ASAP',
+      :url => 'http://www.test.com.au',
+      :billing_address => {
+        :address1 => 'Bloggs Enterprise',
+        :phone => '0297979797',
+        :zip => '2111',
+        :city => 'Capital City',
+        :country => 'AU',
+        :state => 'ACT',
+        :mobile => '',
+        :fax => '0298989898' 
+      },
+    }
+    @credit_card = credit_card(4444333322221111)
+
     @payment = {
       :managed_customer_id => '9876543211000',
       :amount => 1000,
@@ -56,8 +79,7 @@ class EwayTokenTest < Test::Unit::TestCase
   end
 
   def test_successful_store
-    credit_card = @customer.delete(:credit_card)
-    response = @gateway.store(credit_card, @customer)
+    response = @gateway.store(@credit_card, @am_customer)
     assert_instance_of Response, response
     assert_success response
     assert_nil response.authorization
@@ -65,9 +87,8 @@ class EwayTokenTest < Test::Unit::TestCase
   end
 
   def test_failed_store
-    @customer[:title] = 'Invalid'
-    credit_card = @customer.delete(:credit_card)
-    response = @gateway.store(credit_card, @customer)
+    @am_customer[:title] = 'Invalid'
+    response = @gateway.store(@credit_card, @am_customer)
     assert_failure response
     assert_nil response.authorization
   end
@@ -100,27 +121,26 @@ class EwayTokenTest < Test::Unit::TestCase
   end
 
   def test_successful_update
-    credit_card = @customer.delete(:credit_card)
-    response = @gateway.update('9876543211000', credit_card, @customer)
+    credit_card = @am_customer.delete(:credit_card)
+    response = @gateway.update('9876543211000', @credit_card, @am_customer)
     assert_instance_of Response, response
     assert_success response
     assert_nil response.authorization
     assert_equal 'true', response.params['update_customer_result']
   end
 
-  def test_non_existent_update_customer
-    credit_card = @customer.delete(:credit_card)
-    response = @gateway.update('1234567899000', credit_card, @customer)
+  def test_non_existent_update
+    @am_customer[:title] = 'Invalid'
+    response = @gateway.update('1234567899000', @credit_card, @am_customer)
     assert_instance_of Response, response
     assert_failure response
     assert_nil response.authorization
     assert_equal 'Invalid managedCustomerID', response.message
   end
 
-  def test_failed_update_customer
-    @customer[:title] = 'Invalid'
-    credit_card = @customer.delete(:credit_cart)
-    response = @gateway.update('9876543211000', credit_card, @customer)
+  def test_failed_update
+    @am_customer[:title] = 'Invalid'
+    response = @gateway.update('9876543211000', @credit_card, @am_customer)
     assert_instance_of Response, response
     assert_failure response
     assert_nil response.authorization
