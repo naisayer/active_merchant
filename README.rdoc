@@ -20,6 +20,7 @@ The {ActiveMerchant Wiki}[http://github.com/Shopify/active_merchant/wikis] conta
 * {DataCash}[http://www.datacash.com/] - GB
 * {Efsnet}[http://www.concordefsnet.com/] - US
 * {eWAY}[http://www.eway.com.au/] - AU
+* {eWAY Token Payments}[http://www.eway.com.au/] - AU
 * {E-xact}[http://www.e-xact.com] - CA, US
 * {LinkPoint}[http://www.linkpoint.com/] - US
 * {Merchant e-Solutions}[http://merchante-solutions.com/] - US
